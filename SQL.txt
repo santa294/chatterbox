@@ -1,0 +1,42 @@
+Задача а) Выведи ники клиентов, поставивших csat меньше 3
+
+SELECT ticket_client
+FROM tickets
+WHERE csat < 3;
+
+Задача б) Напиши SQL запрос, который вернет id тикетов, в тексте которых содержится слово “отлично” и отсортируй их по убыванию ксата
+
+SELECT ticket_id
+FROM tickets
+WHERE text LIKE '%отлично%'
+ORDER BY csat DESC;
+
+Задача в) Напиши SQL запрос, который вернет id клиентов, сделавших больше пяти заказов в ресторанах “Теремок” и “Вкусно и точка” на сумму от двух до десяти тысяч рублей. Также запрос должен вернуть сумму их самого дорогого заказа для этого фильтра. Полученные столбцы назови “frequent_customer” и “max_sum”
+
+SELECT 
+    o.order_client_id AS frequent_customer,
+    MAX(o.price) AS max_sum
+FROM 
+    orders o
+WHERE 
+    o.place IN ('Теремок', 'Вкусно и точка')
+    AND o.price BETWEEN 2000 AND 10000
+GROUP BY 
+    o.order_client_id
+HAVING 
+    COUNT(o.order_id) > 5;
+
+
+Задача г) Дополнительное задание: Напиши SQL запрос, который дополнит таблицу orders данными из таблиц clients и tickets и вернет только 1000 записей из полученной таблицы
+
+SELECT 
+    o.*,
+    c.*,
+    t.*
+FROM 
+    orders o
+JOIN 
+    clients c ON o.order_client_id = c.client_id
+JOIN 
+    tickets t ON o.order_id = t.ticket_order_id
+LIMIT 1000;
